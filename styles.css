@@ -1,0 +1,41 @@
+body {
+  font-size: 16px;
+  background: #fafafa;
+}
+#wrapper {
+  width: 240px;
+  display: flex;
+  flex-wrap: wrap;
+  color: white;
+  font-weight: 700;
+  font-family: sans-serif;
+  margin: 0 auto;
+  margin-top: 5em;
+  font-size: 1.4em;
+}
+#result {
+  width: 240px;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 1em;
+  text-align: right;
+}
+button {
+  color: inherit;
+  width: 60px;
+  height: 60px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+button#zero {
+    width: 120px;
+}
+button#submit {
+    background: orange;
+}
+button:nth-child(4n + 1) {
+  background: orange;
+}
