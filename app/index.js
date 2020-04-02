@@ -1,24 +1,49 @@
+class Calculator {
+  constructor(initialValue) {
+    this.initialValue = initialValue;
+    this.value = initialValue;
+  }
+
+  input(value) {
+    if (this.value == 0) this.value = value;
+    this.value += value;
+  }
+
+  reset() {
+    this.value = this.initialValue;
+  }
+
+  calculate() {
+    this.value = eval(this.value);
+  }
+
+  print() {
+    output.innerHTML = this.value;
+  }
+}
+
+var calculator = new Calculator(0);
+calculator.output = document.querySelector("#result");
+
+
 document.addEventListener("click", function(event) {
-  var text = event.target.innerText;
+  var text, action;
+  text = event.target.innerText;
 
-  var x = document.querySelector("#result");
+  if (typeof text == "number") action = "inputNumber";
+  if (text == "AC") action = "reset";
+  if (text == "=") action = "calculate";
 
-  if (window.isDone) {
-      window.isDone = false;
-      x.innerHTML = 0;
+  switch (action) {
+    case "inputNumber":
+      calculator.input(text);
+      break;
+    case "reset":
+      calculator.reset();
+      break;
+    case "calculate":
+      calculator.calculate();
   }
-  if (text == 'AC') {
-      x.innerHTML = 0;
-      return;
-  }
-  if (text == "=") {
-    x.innerHTML = eval(x.innerHTML);
-    window.isDone = true;
-  } else {
-    if (x.innerHTML == 0) {
-      x.innerHTML = text;
-    } else {
-      x.innerHTML += text;
-    }
-  }
+
+  calculator.print();
 });
