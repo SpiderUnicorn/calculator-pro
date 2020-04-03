@@ -4,25 +4,6 @@ class CalculatorFactory {
   }
 }
 
-
-class CalculatorConfigurationColorBuilder {
-  resultColor(color) {
-    this.resultClr = color;
-    return this;
-  }
-
-  brownButtonColor(color) {
-    this.brownButtonColor = color;
-    return this;
-  }
-
-  Build() {
-    return {
-      submitButtonColor: this.submitButtonColor
-    }
-  }
-}
-
 class CalculatorConfiguration {
   
   constructor(initialValue, output, colors) {
@@ -30,7 +11,7 @@ class CalculatorConfiguration {
     this.output = output;
     this.colors = colors;
   }
-  
+
 }
 
 class CalculatorConfigurationBuilder {
@@ -46,12 +27,33 @@ class CalculatorConfigurationBuilder {
 
   addColors(colorBuilder) {
     this.colors = colorBuilder.Build();
+    this.output.style['background-color'] = this.colors.resultClr;
+
     return this;
   }
 
 
   Build() {
     return new CalculatorConfiguration(this.initialValue, this.output, this.colors);
+  }
+}
+
+class CalculatorConfigurationColorBuilder {
+  resultColor(color) {
+    this.resultClr = color;
+    return this;
+  }
+
+  brownButtonColor(color) {
+    this.brownButtonColor = color;
+    return this;
+  }
+
+  Build() {
+    return {
+      resultClr: this.resultClr,
+      brownButtonColor: this.brownButtonColor
+    }
   }
 }
 
@@ -63,9 +65,9 @@ class Calculator {
   }
 
   input(value) {
-    if (this.value == 0) 
-            this.value = value;
-    this.value += value;
+    if (this.value == 0)  
+           this.value = value;
+      this.value += value;
   }
 
   reset() {
@@ -81,8 +83,7 @@ class Calculator {
   }
 }
 
-var cccb = new CalculatorConfigurationColorBuilder();
-cccb.resultColor("rgba(0, 0, 0, 0.8)").brownButtonColor = "orange";
+var cccb = new CalculatorConfigurationColorBuilder().resultColor("rgba(0, 0, 0, 0.8)").brownButtonColor("orange");
 
 var c = new CalculatorConfigurationBuilder(0)
   .output(document.querySelector("#result")).addColors(cccb)
@@ -92,24 +93,38 @@ var calculator = CalculatorFactory.create(c);
 
 
 document.addEventListener("click", function(event) {
-  var text, action;
+  var text, action, event;
 
   text = event.target.innerText;
 
   if (typeof -text == "number") action = "inputNumber";
   if (text == "AC") action = "reset";
   if (text == "=") action = "calculate";
-
-  switch (action) {
-    case "inputNumber":
-      calculator.input(text);
-      break;
-    case "reset":
-      calculator.reset();
-      break;
-    case "calculate":
-      calculator.calculate();
+  if(action == "inputNumber") {
+    document.dispatchEvent(new CustomEvent('numberInputted', {  detail: { number: text }}))
   }
-
-  calculator.print();
+  if(action == "reset") {
+    document.dispatchEvent(new CustomEvent('resetted'))
+  }
+  if(action == "calculate") {
+    document.dispatchEvent(new CustomEvent('calculated'))
+  }
 });
+
+
+document.addEventListener("numberInputted", function(event) {
+  calculator.input(event.detail.number);
+  calculator.print();
+
+})
+
+document.addEventListener("resetted", function() {
+  calculator.reset();
+  calculator.print();
+
+})
+
+document.addEventListener("calculated", function() {
+  calculator.calculate();
+  calculator.print();
+})
